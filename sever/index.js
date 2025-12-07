@@ -7,13 +7,14 @@ const PORT = 5000;
 // Middleware
 app.use(cors()); // Cho phép Frontend gọi API
 app.use(express.json());
-
+app.use('/images', express.static('images')); 
 // Dữ liệu giả lập (Database)
 const products = [
-    { id: 1, name: "Áo Thun Basic", price: 150000, image: "https://via.placeholder.com/150" },
-    { id: 2, name: "Quần Jeans", price: 350000, image: "https://via.placeholder.com/150" },
-    { id: 3, name: "Giày Sneaker", price: 800000, image: "https://via.placeholder.com/150" },
-    { id: 4, name: "Mũ Lưỡi Trai", price: 90000, image: "https://via.placeholder.com/150" },
+    { id: 1, name: "Áo Thun BROKENBLADE", price: 150000, image: "http://localhost:5000/images/BROKENBLADE1.jpg" },
+    { id: 2, name: "Áo Thun LIFSTU", price: 150000, image: "https://via.placeholder.com/150" },
+    { id: 3, name: "Áo Thun LS", price: 150000, image: "https://via.placeholder.com/150" },
+    { id: 4, name: "Áo Thun RALLY", price: 150000, image: "https://via.placeholder.com/150" },
+    { id: 5, name: "Áo Thun RICHWRLD", price: 150000, image: "https://via.placeholder.com/150" },
 ];
 
 // API Lấy danh sách sản phẩm
