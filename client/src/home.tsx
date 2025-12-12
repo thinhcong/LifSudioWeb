@@ -1,147 +1,97 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import './App.css';
 import Feedback from './component/feedback';
+import Navbar from './component/Navbar';
+import HeroSlider from './component/HeroSlider';
+import AuthModal from './component/authmodal';
 
-// Dữ liệu banner
-const banners = [
-  {
-    id: 1,
-    title: "SUMMER VIBES 2025",
-    category: "Nữ Tính · Xu Hướng Mới",
-    desc: "Tỏa sáng rực rỡ với bộ sưu tập váy hoa và áo kiểu mùa hè.",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1470&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    title: "GENTLEMAN STYLE",
-    category: "Nam Giới · Lịch Lãm",
-    desc: "Đẳng cấp phái mạnh với những bộ Vest và Sơ mi thiết kế riêng.",
-    image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?q=80&w=1470&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    title: "URBAN STREETWEAR",
-    category: "Unisex · Cá Tính",
-    desc: "Bứt phá giới hạn bản thân với phong cách đường phố cực chất.",
-    image: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1470&auto=format&fit=crop",
-  }
-];
+
 
 function Home() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [cart, setCart] = useState<any[]>([]);
-  const [currentSlide, setCurrentSlide] = useState(0);
-
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  
   const navigate = useNavigate();
 
-  // --- Logic tự động chuyển slide ---
-  useEffect(() => {
-    const slideInterval = setInterval(() => {
-      setCurrentSlide(prev => (prev === banners.length - 1 ? 0 : prev + 1));
-    }, 2000);
-
-    return () => clearInterval(slideInterval);
-  }, []);
-
-  // API lấy sản phẩm
+  // --- LOGIC ---
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then(res => res.json())
       .then(data => setProducts(data))
-      .catch(err => console.error("Lỗi:", err));
+      .catch(err => console.error(err));
   }, []);
 
-  const addToCart = (product: any) => setCart([...cart, product]);
+  const addToCart = (product) => setCart([...cart, product]);
   const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
   const handleCheckout = async () => {
+    if (!currentUser) return setIsAuthOpen(true);
     if (cart.length === 0) return alert("Giỏ hàng đang trống!");
-
+    
     try {
       const res = await fetch("http://localhost:5000/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cart, total: totalAmount })
+        body: JSON.stringify({ cart, total: totalAmount, user: currentUser })
       });
-
       const data = await res.json();
-
-      if (data.success) {
-        const id = data.orderId; // lấy ID từ backend
-        navigate(`/orderDetail/${id}`); // chuyển hướng sang order:id
-      }
-
-    } catch (err) {
-      console.error(err);
-      alert("Lỗi khi đặt hàng!");
-    }
+      if (data.success) navigate(`/orderDetail/${data.orderId}`);
+    } catch (e) { console.error(e) }
   };
 
+  // --- RENDER ---
   return (
-    <div className="app-container">
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="navbar-inner">
-          <div className="logo">LIF STUDIO</div>
-          <div className="cart-area">
-            <span className="cart-total">{cart.length} món - {totalAmount.toLocaleString()}đ</span>
-            <button onClick={handleCheckout} className="btn-checkout">Thanh Toán</button>
-          </div>
-        </div>
-      </nav>
+    <div className="font-sans text-gray-900 bg-gray-50 min-h-screen">
+      
+      <Navbar 
+        cartCount={cart.length}
+        totalAmount={totalAmount}
+        currentUser={currentUser}
+        onCheckout={handleCheckout}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onLogout={() => setCurrentUser(null)}
+      />
 
-      {/* Slider */}
-      <div className="hero-slider">
-        {banners.map((banner, index) => (
-          <div
-            key={banner.id}
-            className={`slide ${index === currentSlide ? 'active' : ''}`}
-            style={{ backgroundImage: `url(${banner.image})` }}
-          >
-            <div className="overlay"></div>
-            <div className="slide-content">
-              <h1>{banner.title}</h1>
-              <div className="meta-info">
-                <button className="btn-stream">Stream now</button>
-                <span className="category"><strong>{banner.category}</strong></span>
-                <span className="desc">· {banner.desc}</span>
-              </div>
-            </div>
-          </div>
-        ))}
+      <HeroSlider />
 
-        <div className="dots-container">
-          {banners.map((_, index) => (
-            <div
-              key={index}
-              className={`dot ${index === currentSlide ? 'active-dot' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-            ></div>
-          ))}
-        </div>
-      </div>
-
-      {/* Products */}
-      <main className="main-content">
-        <h2 className="section-title">Sản Phẩm Mới Nhất</h2>
-        <div className="product-grid">
+      <main className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-bold text-center mb-12 uppercase tracking-wide">Sản Phẩm Mới Nhất</h2>
+        
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
           {products.map(product => (
-            <div key={product.id} className="product-card">
-              <div className="image-wrapper"><img src={product.image} alt={product.name} /></div>
-              <div className="card-body">
-                <h3>{product.name}</h3>
-                <p className="price">{product.price.toLocaleString()} VND</p>
-                <button className="btn-add" onClick={() => addToCart(product)}>+ Thêm</button>
+            <div key={product.id} className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="relative overflow-hidden aspect-[3/4]">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="absolute bottom-4 right-4 bg-white text-black w-10 h-10 rounded-full flex items-center justify-center shadow-lg translate-y-12 group-hover:translate-y-0 transition-transform hover:bg-black hover:text-white"
+                >
+                  +
+                </button>
+              </div>
+              <div className="p-4">
+                <h3 className="font-bold text-lg mb-1 truncate">{product.name}</h3>
+                <p className="text-gray-500">{product.price.toLocaleString()} VND</p>
               </div>
             </div>
           ))}
         </div>
       </main>
+
       <Feedback />
 
+      <footer className="bg-black text-white py-8 text-center mt-12">
+        <p>© 2025 Lif Studio - Fashion & Style</p>
+      </footer>
 
-      <footer><p>© 2025 Brand Shop</p></footer>
+      <AuthModal 
+        isOpen={isAuthOpen} 
+        onClose={() => setIsAuthOpen(false)} 
+        onLoginSuccess={(user) => setCurrentUser(user)}
+      />
     </div>
   );
 }
