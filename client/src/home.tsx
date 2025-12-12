@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import './App.css';
+import Feedback from './component/feedback';
 
 // Dữ liệu banner
 const banners = [
@@ -51,38 +52,38 @@ function Home() {
       .catch(err => console.error("Lỗi:", err));
   }, []);
 
-  const addToCart = (product : any ) => setCart([...cart, product]);
+  const addToCart = (product: any) => setCart([...cart, product]);
   const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
- const handleCheckout = async () => {
-  if (cart.length === 0) return alert("Giỏ hàng đang trống!");
+  const handleCheckout = async () => {
+    if (cart.length === 0) return alert("Giỏ hàng đang trống!");
 
-  try {
-    const res = await fetch("http://localhost:5000/api/order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cart, total: totalAmount })
-    });
+    try {
+      const res = await fetch("http://localhost:5000/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cart, total: totalAmount })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success) {
-      const id = data.orderId; // lấy ID từ backend
-      navigate(`/orderDetail/${id}`); // chuyển hướng sang order:id
+      if (data.success) {
+        const id = data.orderId; // lấy ID từ backend
+        navigate(`/orderDetail/${id}`); // chuyển hướng sang order:id
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Lỗi khi đặt hàng!");
     }
-
-  } catch (err) {
-    console.error(err);
-    alert("Lỗi khi đặt hàng!");
-  }
-};
+  };
 
   return (
     <div className="app-container">
       {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-inner">
-          <div className="logo">BRAND SHOP</div>
+          <div className="logo">LIF STUDIO</div>
           <div className="cart-area">
             <span className="cart-total">{cart.length} món - {totalAmount.toLocaleString()}đ</span>
             <button onClick={handleCheckout} className="btn-checkout">Thanh Toán</button>
@@ -137,6 +138,8 @@ function Home() {
           ))}
         </div>
       </main>
+      <Feedback />
+
 
       <footer><p>© 2025 Brand Shop</p></footer>
     </div>

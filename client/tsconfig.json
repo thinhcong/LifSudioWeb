@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+"compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "react-jsx",
@@ -9,5 +9,9 @@
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true
-  }
+  }, 
+  "include": [
+    "src"
+  ]
 }
+ 
