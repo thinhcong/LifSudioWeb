@@ -1,72 +1,81 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import './App.css';
 
-// Dữ liệu giả lập cho Slide (Ảnh chất lượng cao từ Unsplash)
-// Thay thế đoạn banners cũ bằng đoạn này:
+// Dữ liệu banner
 const banners = [
   {
     id: 1,
     title: "SUMMER VIBES 2025",
     category: "Nữ Tính · Xu Hướng Mới",
     desc: "Tỏa sáng rực rỡ với bộ sưu tập váy hoa và áo kiểu mùa hè.",
-    // Ảnh cô gái đang đi dạo phố thời trang
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1470&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1470&auto=format&fit=crop",
   },
   {
     id: 2,
     title: "GENTLEMAN STYLE",
     category: "Nam Giới · Lịch Lãm",
     desc: "Đẳng cấp phái mạnh với những bộ Vest và Sơ mi thiết kế riêng.",
-    // Ảnh người mẫu nam mặc Vest sang trọng
-    image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?q=80&w=1470&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?q=80&w=1470&auto=format&fit=crop",
   },
   {
     id: 3,
     title: "URBAN STREETWEAR",
     category: "Unisex · Cá Tính",
     desc: "Bứt phá giới hạn bản thân với phong cách đường phố cực chất.",
-    // Ảnh phong cách đường phố ngầu
-    image: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1470&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1470&auto=format&fit=crop",
   }
-];// Thay thế đoạn banners cũ bằng đoạn này:
+];
 
-
-function App() {
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  
-  // State quản lý slide hiện tại
+function Home() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [cart, setCart] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // --- Logic tự động chuyển slide sau 2s ---
+  const navigate = useNavigate();
+
+  // --- Logic tự động chuyển slide ---
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
-    }, 2000); // 2000ms = 2 giây
+      setCurrentSlide(prev => (prev === banners.length - 1 ? 0 : prev + 1));
+    }, 2000);
 
-    return () => clearInterval(slideInterval); // Dọn dẹp khi component bị hủy
+    return () => clearInterval(slideInterval);
   }, []);
 
   // API lấy sản phẩm
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    fetch("http://localhost:5000/api/products")
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.error("Lỗi:", err));
   }, []);
 
-  const addToCart = (product) => setCart([...cart, product]);
-
+  const addToCart = (product : any ) => setCart([...cart, product]);
   const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
-  const handleCheckout = () => {
-    if(cart.length === 0) return alert("Giỏ hàng đang trống!");
-    fetch('http://localhost:5000/api/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+ const handleCheckout = async () => {
+  if (cart.length === 0) return alert("Giỏ hàng đang trống!");
+
+  try {
+    const res = await fetch("http://localhost:5000/api/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cart, total: totalAmount })
-    }).then(res => res.json()).then(data => { alert(data.message); setCart([]); });
-  };
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      const id = data.orderId; // lấy ID từ backend
+      navigate(`/orderDetail/${id}`); // chuyển hướng sang order:id
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi khi đặt hàng!");
+  }
+};
 
   return (
     <div className="app-container">
@@ -81,17 +90,15 @@ function App() {
         </div>
       </nav>
 
-      {/* --- HERO SLIDER MỚI (GIỐNG HÌNH) --- */}
+      {/* Slider */}
       <div className="hero-slider">
         {banners.map((banner, index) => (
-          <div 
-            key={banner.id} 
+          <div
+            key={banner.id}
             className={`slide ${index === currentSlide ? 'active' : ''}`}
             style={{ backgroundImage: `url(${banner.image})` }}
           >
-            {/* Lớp phủ đen mờ để chữ rõ hơn */}
             <div className="overlay"></div>
-
             <div className="slide-content">
               <h1>{banner.title}</h1>
               <div className="meta-info">
@@ -103,11 +110,10 @@ function App() {
           </div>
         ))}
 
-        {/* Các dấu chấm tròn (Pagination) */}
         <div className="dots-container">
           {banners.map((_, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`dot ${index === currentSlide ? 'active-dot' : ''}`}
               onClick={() => setCurrentSlide(index)}
             ></div>
@@ -115,7 +121,7 @@ function App() {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Products */}
       <main className="main-content">
         <h2 className="section-title">Sản Phẩm Mới Nhất</h2>
         <div className="product-grid">
@@ -131,10 +137,10 @@ function App() {
           ))}
         </div>
       </main>
-      
+
       <footer><p>© 2025 Brand Shop</p></footer>
     </div>
   );
 }
 
-export default App;
+export default Home;

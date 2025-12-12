@@ -10,7 +10,7 @@ app.use('/images', express.static('images'));
 
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/order", require("./routes/orderRoutes"));
-
+app.use("/api/payment", require("./routes/payment"));
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server chạy tại http://0.0.0.0:${PORT}`);
 });

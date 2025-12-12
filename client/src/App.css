@@ -1,4 +1,4 @@
-/* --- 1. CẤU HÌNH CƠ BẢN & RESET --- */
+@import "tailwindcss";
 :root {
   --primary-color: #667eea;
   --secondary-color: #764ba2;
