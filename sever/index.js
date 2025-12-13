@@ -9,6 +9,8 @@ const PORT = 5000;
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes   = require("./routes/orderRoutes");
 const paymentModule = require("./routes/payment");
+const authRoutes    = require("./routes/authRoutes");
+
 const paymentRoutes = paymentModule.default || paymentModule;
 
 // 🔍 DEBUG
@@ -25,7 +27,7 @@ app.use('/images', express.static('images'));
 app.use("/api/products", productRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/payment", paymentRoutes);
-
+app.use("/api/auth", authRoutes); 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server chạy tại http://0.0.0.0:${PORT}`);
 });

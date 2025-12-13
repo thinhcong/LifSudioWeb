@@ -46,69 +46,69 @@ const feedbackData: FeedbackUser[] = [
     rating: 5
   },
   // Data thêm cho trang "Xem thêm"
-  { 
-    id: 5, 
-    name: "Rose", 
-    role: "Artist", 
-    image: "https://atplink.com/blog/wp-content/uploads/2021/06/fgg.jpg", 
-    comment: "Tuyệt vời!", 
-    rating: 5 
+  {
+    id: 5,
+    name: "Rose",
+    role: "Artist",
+    image: "https://atplink.com/blog/wp-content/uploads/2021/06/fgg.jpg",
+    comment: "Tuyệt vời!",
+    rating: 5
   },
-  { 
-    id: 6, 
-    name: "Son Tung M-TP", 
-    role: "Singer", 
+  {
+    id: 6,
+    name: "Son Tung M-TP",
+    role: "Singer",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200", // Mẫu nam điển trai
-    comment: "Good vibes only.", 
-    rating: 4 
+    comment: "Good vibes only.",
+    rating: 4
   },
-  { 
-    id: 7, 
-    name: "Taylor Swift", 
-    role: "Singer", 
+  {
+    id: 7,
+    name: "Taylor Swift",
+    role: "Singer",
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200", // Mẫu nữ tóc sáng màu
-    comment: "Love the atmosphere.", 
-    rating: 5 
+    comment: "Love the atmosphere.",
+    rating: 5
   },
-  { 
-    id: 8, 
-    name: "G-Dragon", 
-    role: "Rapper", 
+  {
+    id: 8,
+    name: "G-Dragon",
+    role: "Rapper",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200", // Mẫu nam cool ngầu
-    comment: "Swag!", 
-    rating: 5 
+    comment: "Swag!",
+    rating: 5
   },
-{
-  id: 9,
-  name: "Lisa (Blackpink)",
-  role: "K-pop Idol",
-  image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=900&auto=format&fit=crop",
-  rating: 5
-},
-{
-  id: 10,
-  name: "Jennie Kim",
-  role: "Fashion Icon",
-  image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=900&auto=format&fit=crop",
-  comment: "Không gian rất chill và trang phục cực kỳ thoải mái.",
-  rating: 5
-},
-{
-  id: 11,
-  name: "Katy Perry",
-  role: "Singer",
-  image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=900&auto=format&fit=crop",
-  comment: "Dịch vụ chuyên nghiệp, chắc chắn sẽ quay lại lần sau.",
-  rating: 4
-},
-{
-  id: 12,
-  name: "Hương Giang",
-  role: "Miss International Queen",
-  image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=900&auto=format&fit=crop",
-  comment: "Phong cách thiết kế rất sang trọng và tôn dáng.",
-  rating: 5
-},
+  {
+    id: 9,
+    name: "Lisa (Blackpink)",
+    role: "K-pop Idol",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=900&auto=format&fit=crop",
+    rating: 5
+  },
+  {
+    id: 10,
+    name: "Jennie Kim",
+    role: "Fashion Icon",
+    image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=900&auto=format&fit=crop",
+    comment: "Không gian rất chill và trang phục cực kỳ thoải mái.",
+    rating: 5
+  },
+  {
+    id: 11,
+    name: "Katy Perry",
+    role: "Singer",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=900&auto=format&fit=crop",
+    comment: "Dịch vụ chuyên nghiệp, chắc chắn sẽ quay lại lần sau.",
+    rating: 4
+  },
+  {
+    id: 12,
+    name: "Hương Giang",
+    role: "Miss International Queen",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=900&auto=format&fit=crop",
+    comment: "Phong cách thiết kế rất sang trọng và tôn dáng.",
+    rating: 5
+  },
 
 ];
 
@@ -124,7 +124,7 @@ const FeedbackCardHome = ({ item }: { item: FeedbackUser }) => {
         alt={item.name}
         className="object-cover w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-110"
       />
-      
+
       {/* Overlay Gradient (Chỉ hiện khi hover để bắt mắt) */}
       <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-t from-black/80 via-transparent to-transparent group-hover:opacity-100" />
 
@@ -133,9 +133,9 @@ const FeedbackCardHome = ({ item }: { item: FeedbackUser }) => {
         <h3 className="text-xl font-bold tracking-wider uppercase">{item.name}</h3>
         <p className="text-sm font-light text-gray-300">{item.role}</p>
         <div className="flex gap-1 mt-2">
-             {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />
-             ))}
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />
+          ))}
         </div>
       </div>
     </div>
@@ -155,16 +155,16 @@ const FeedbackCardCreative = ({ item }: { item: FeedbackUser }) => {
           <p className="text-xs text-gray-500">{item.role}</p>
         </div>
       </div>
-      
+
       <div className="relative p-4 rounded-lg bg-gray-50">
         <Quote className="absolute w-6 h-6 text-gray-300 -top-2 -left-2 fill-gray-200" />
         <p className="pt-2 text-sm italic leading-relaxed text-gray-600">"{item.comment}"</p>
       </div>
 
       <div className="flex justify-end gap-1 mt-3">
-         {[...Array(item.rating || 5)].map((_, i) => (
-            <Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />
-         ))}
+        {[...Array(item.rating || 5)].map((_, i) => (
+          <Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />
+        ))}
       </div>
     </div>
   );
@@ -242,16 +242,16 @@ const FeedbackPage = ({ onBack }: { onBack: () => void }) => {
       <div className="container max-w-6xl mx-auto">
         {/* Header của trang con */}
         <div className="flex flex-col items-center justify-between gap-4 mb-12 md:flex-row">
-            <div>
-                <h1 className="text-4xl font-black text-gray-900">Khách hàng nói gì?</h1>
-                <p className="mt-2 text-gray-500">Những chia sẻ chân thực từ những người bạn tuyệt vời.</p>
-            </div>
-            <button 
-                onClick={onBack}
-                className="px-6 py-2 text-sm font-medium text-gray-700 transition bg-white border border-gray-300 rounded-lg hover:bg-gray-100"
-            >
-                ← Quay lại trang chủ
-            </button>
+          <div>
+            <h1 className="text-4xl font-black text-gray-900">Khách hàng nói gì?</h1>
+            <p className="mt-2 text-gray-500">Những chia sẻ chân thực từ những người bạn tuyệt vời.</p>
+          </div>
+          <button
+            onClick={onBack}
+            className="px-6 py-2 text-sm font-medium text-gray-700 transition bg-white border border-gray-300 rounded-lg hover:bg-gray-100"
+          >
+            ← Quay lại trang chủ
+          </button>
         </div>
 
         {/* Masonry Layout (Bố cục so le sáng tạo) */}
@@ -260,9 +260,8 @@ const FeedbackPage = ({ onBack }: { onBack: () => void }) => {
             <FeedbackCardCreative key={item.id} item={item} />
           ))}
         </div>
-        
         <div className="mt-16 text-center">
-            <p className="text-sm text-gray-400">Hiển thị {feedbackData.length} feedbacks</p>
+          <p className="text-sm text-gray-400">Hiển thị {feedbackData.length} feedbacks</p>
         </div>
       </div>
     </div>
@@ -281,10 +280,10 @@ const App = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        {/* Giả lập trang chủ chỉ chứa Feedback Section cho dễ nhìn */}
-        <div className="w-full bg-white shadow-2xl">
-            <FeedbackSection onSeeMore={() => setCurrentView('feedback')} />
-        </div>
+      {/* Giả lập trang chủ chỉ chứa Feedback Section cho dễ nhìn */}
+      <div className="w-full bg-white shadow-2xl">
+        <FeedbackSection onSeeMore={() => setCurrentView('feedback')} />
+      </div>
     </div>
   );
 };

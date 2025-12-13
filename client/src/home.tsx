@@ -12,7 +12,7 @@ function Home() {
   const [cart, setCart] = useState([]);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  
+
   const navigate = useNavigate();
 
   // --- LOGIC ---
@@ -23,13 +23,40 @@ function Home() {
       .catch(err => console.error(err));
   }, []);
 
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return; // Không có token thì thôi
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}` // Gửi kèm token
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setCurrentUser(data.data);
+        } else {
+          localStorage.removeItem('token');
+        }
+      } catch (error) {
+        console.error("Lỗi xác thực:", error);
+        localStorage.removeItem('token');
+      }
+    };
+
+    checkLoggedIn();
+  }, []);
+
   const addToCart = (product) => setCart([...cart, product]);
   const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
   const handleCheckout = async () => {
     if (!currentUser) return setIsAuthOpen(true);
     if (cart.length === 0) return alert("Giỏ hàng đang trống!");
-    
+
     try {
       const res = await fetch("http://localhost:5000/api/order", {
         method: "POST",
@@ -43,37 +70,40 @@ function Home() {
 
   // --- RENDER ---
   return (
-    <div className="font-sans text-gray-900 bg-gray-50 min-h-screen">
-      
-      <Navbar 
+    <div className="min-h-screen font-sans text-gray-900 bg-gray-50">
+
+      <Navbar
         cartCount={cart.length}
         totalAmount={totalAmount}
         currentUser={currentUser}
         onCheckout={handleCheckout}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onLogout={() => setCurrentUser(null)}
+        onLogout={() => {
+          localStorage.removeItem('token');
+          setCurrentUser(null);
+        }}
       />
 
       <HeroSlider />
 
-      <main className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12 uppercase tracking-wide">Sản Phẩm Mới Nhất</h2>
-        
+      <main className="px-6 py-16 mx-auto max-w-7xl">
+        <h2 className="mb-12 text-3xl font-bold tracking-wide text-center uppercase">Sản Phẩm Mới Nhất</h2>
+
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
           {products.map(product => (
-            <div key={product.id} className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+            <div key={product.id} className="overflow-hidden transition-all duration-300 bg-white shadow-sm group rounded-xl hover:shadow-xl">
               <div className="relative overflow-hidden aspect-[3/4]">
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                <button 
+                <img src={product.image} alt={product.name} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" />
+                <button
                   onClick={() => addToCart(product)}
-                  className="absolute bottom-4 right-4 bg-white text-black w-10 h-10 rounded-full flex items-center justify-center shadow-lg translate-y-12 group-hover:translate-y-0 transition-transform hover:bg-black hover:text-white"
+                  className="absolute flex items-center justify-center w-10 h-10 text-black transition-transform translate-y-12 bg-white rounded-full shadow-lg bottom-4 right-4 group-hover:translate-y-0 hover:bg-black hover:text-white"
                 >
                   +
                 </button>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-lg mb-1 truncate">{product.name}</h3>
+                <h3 className="mb-1 text-lg font-bold truncate">{product.name}</h3>
                 <p className="text-gray-500">{product.price.toLocaleString()} VND</p>
               </div>
             </div>
@@ -83,13 +113,13 @@ function Home() {
 
       <Feedback />
 
-      <footer className="bg-black text-white py-8 text-center mt-12">
+      <footer className="py-8 mt-12 text-center text-white bg-black">
         <p>© 2025 Lif Studio - Fashion & Style</p>
       </footer>
 
-      <AuthModal 
-        isOpen={isAuthOpen} 
-        onClose={() => setIsAuthOpen(false)} 
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
         onLoginSuccess={(user) => setCurrentUser(user)}
       />
     </div>
